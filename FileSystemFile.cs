@@ -72,5 +72,10 @@ namespace TinyMemFS
             result = $"{this._fileName}, {this._formattedFileSize}, {this._created}";
             return result;
         }
+
+        public byte[] getFileData()
+        {
+            return _data;
+        }
     }
 }

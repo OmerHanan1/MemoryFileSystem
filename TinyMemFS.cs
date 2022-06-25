@@ -97,8 +97,16 @@ namespace TinyMemFS
         /// <returns>return false if operation failed for any reason</returns>
         public bool save(String fileName, String fileToAdd)
         {
-
-            return true;
+            try 
+            {
+                File.WriteAllBytes(fileToAdd, this.fileSystem[fileName].getFileData());
+                return true;
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine($"Caught exception: {ex}");
+                return false;
+            }
         }
 
         /// <summary>
