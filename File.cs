@@ -15,6 +15,10 @@ namespace TinyMemFS
         private int _fileSize { get; set; }
         private string _formattedFileSize { get; set; }
 
+        /// <summary>
+        /// Constructor, only file name provided
+        /// </summary>
+        /// <param name="fileName">name for file</param>
         public File(string fileName)
         {
             this._fileName = fileName;
@@ -24,6 +28,11 @@ namespace TinyMemFS
             this._formattedFileSize = getFormattedFileSize(_fileSize);
         }
 
+        /// <summary>
+        /// Constructor, file name and data provided
+        /// </summary>
+        /// <param name="fileName">name for file</param>
+        /// <param name="data">file data</param>
         public File(string fileName, List<byte> data)
         {
             this._fileName = fileName;
@@ -33,6 +42,10 @@ namespace TinyMemFS
             this._formattedFileSize = getFormattedFileSize(_fileSize);
         }
 
+        /// <summary>
+        /// Copy constructor
+        /// </summary>
+        /// <param name="file">source file to copy from</param>
         public File(File file)
         {
             this._fileName = file._fileName;
@@ -42,6 +55,11 @@ namespace TinyMemFS
             this._formattedFileSize= file._formattedFileSize;
         }
 
+        /// <summary>
+        /// formatted data size correctly with B/KB/M/MB/GB/TB suffix
+        /// </summary>
+        /// <param name="size">data byte array length</param>
+        /// <returns>returns the file size with size format</returns>
         public string getFormattedFileSize(int size) 
         {
             string[] orders = { "B", "KB", "MB", "GB", "TB" };
@@ -56,6 +74,10 @@ namespace TinyMemFS
             return result;
         }
 
+        /// <summary>
+        /// Overrided ToString function
+        /// </summary>
+        /// <returns>all needed file data in string format</returns>
         public override string ToString()
         {
             string result = "";
