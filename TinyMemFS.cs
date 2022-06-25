@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,14 +11,14 @@ namespace TinyMemFS
 {
     public class TinyMemFS
     {
-        private ConcurrentDictionary<string,File> fileSystem;
+        private ConcurrentDictionary<string,FileSystemFile> fileSystem;
 
         /// <summary>
         /// Default constructor
         /// </summary>
         public TinyMemFS()
         {
-            this.fileSystem = new ConcurrentDictionary<string,File>();
+            this.fileSystem = new ConcurrentDictionary<string,FileSystemFile>();
         }
 
         /// <summary>
@@ -30,8 +31,19 @@ namespace TinyMemFS
         /// <returns>return false if operation failed for any reason</returns>
         public bool add(String fileName, String fileToAdd)
         {
-
-            return true;
+            bool isAdded = false;
+            try
+            {
+                FileInfo fileInfo = new FileInfo(fileToAdd);
+                FileSystemFile file = new FileSystemFile(fileName, fileInfo.CreationTime, File.ReadAllBytes(fileToAdd));
+                isAdded = this.fileSystem.TryAdd(fileName, file);
+                return isAdded;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Caught exception: {ex}");
+                return isAdded;
+            }
         }
 
         /// <summary>
@@ -47,7 +59,7 @@ namespace TinyMemFS
             try
             {
                 if (this.fileSystem.ContainsKey(fileName))
-                    isRemoved = this.fileSystem.Remove(fileName, out File value);
+                    isRemoved = this.fileSystem.Remove(fileName, out FileSystemFile value);
                 return isRemoved;
             }
             catch (Exception ex)
@@ -68,7 +80,7 @@ namespace TinyMemFS
         public List<String> listFiles()
         {
             List<String> files = new List<string>();
-            foreach (File file in fileSystem.Values) 
+            foreach (FileSystemFile file in fileSystem.Values) 
             {
                 files.Add(file.ToString());
             }

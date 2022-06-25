@@ -11,10 +11,10 @@ namespace TinyMemFS
             for (int i = 0; i < 100000; i++)
                 list[i] = (byte)i;
             
-            File file = new File("file", list);
-            TinyMemFS tinyMemFS = new TinyMemFS();
+            //File file = new File("file", list);
+            //TinyMemFS tinyMemFS = new TinyMemFS();
             
-            Console.WriteLine(file.ToString());
+            //Console.WriteLine(file.ToString());
         }
     }
 }

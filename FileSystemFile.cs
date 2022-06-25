@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace TinyMemFS
 {
-    internal class File
+    internal class FileSystemFile
     {
         private string _fileName { get; set; }
         private DateTime _created { get; set; }
@@ -15,34 +15,26 @@ namespace TinyMemFS
         private int _fileSize { get; set; }
         private string _formattedFileSize { get; set; }
 
-        public File(string fileName, DateTime created, byte[] data, int fileSize)
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="fileName">name for file</param>
+        /// <param name="created">created time</param>
+        /// <param name="data">file data in byte array</param>
+        public FileSystemFile(string fileName, DateTime created, byte[] data)
         {
             _fileName = fileName;
             _created = created;
             _data = data;
-            _fileSize = fileSize;
-            _formattedFileSize = getFormattedFileSize(fileSize);
-        }
-
-        /// <summary>
-        /// Constructor, file name and data provided
-        /// </summary>
-        /// <param name="fileName">name for file</param>
-        /// <param name="data">file data</param>
-        public File(string fileName, byte[] data)
-        {
-            this._fileName = fileName;
-            this._data = data;
-            this._created = DateTime.Now;
-            this._fileSize = data.Length;
-            this._formattedFileSize = getFormattedFileSize(_fileSize);
+            _fileSize = data.Length;
+            _formattedFileSize = getFormattedFileSize(_fileSize);
         }
 
         /// <summary>
         /// Copy constructor
         /// </summary>
         /// <param name="file">source file to copy from</param>
-        public File(File file)
+        public FileSystemFile(FileSystemFile file)
         {
             this._fileName = file._fileName;
             this._created = file._created;
