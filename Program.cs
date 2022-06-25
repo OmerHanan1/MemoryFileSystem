@@ -7,9 +7,9 @@ namespace TinyMemFS
     {
         static void Main(string[] args)
         {
-            List<byte> list = new List<byte>();
+            byte[] list = new byte[100000];
             for (int i = 0; i < 100000; i++)
-                list.Add((byte)0);
+                list[i] = (byte)i;
             
             File file = new File("file", list);
             TinyMemFS tinyMemFS = new TinyMemFS();

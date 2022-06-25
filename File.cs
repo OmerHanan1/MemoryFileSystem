@@ -11,21 +11,17 @@ namespace TinyMemFS
     {
         private string _fileName { get; set; }
         private DateTime _created { get; set; }
-        private List<byte> _data { get; set; }
+        private byte[] _data { get; set; }
         private int _fileSize { get; set; }
         private string _formattedFileSize { get; set; }
 
-        /// <summary>
-        /// Constructor, only file name provided
-        /// </summary>
-        /// <param name="fileName">name for file</param>
-        public File(string fileName)
+        public File(string fileName, DateTime created, byte[] data, int fileSize)
         {
-            this._fileName = fileName;
-            this._created = DateTime.Now;
-            this._data = new List<byte>();
-            this._fileSize = 0;
-            this._formattedFileSize = getFormattedFileSize(_fileSize);
+            _fileName = fileName;
+            _created = created;
+            _data = data;
+            _fileSize = fileSize;
+            _formattedFileSize = getFormattedFileSize(fileSize);
         }
 
         /// <summary>
@@ -33,12 +29,12 @@ namespace TinyMemFS
         /// </summary>
         /// <param name="fileName">name for file</param>
         /// <param name="data">file data</param>
-        public File(string fileName, List<byte> data)
+        public File(string fileName, byte[] data)
         {
             this._fileName = fileName;
             this._data = data;
             this._created = DateTime.Now;
-            this._fileSize = data.Count;
+            this._fileSize = data.Length;
             this._formattedFileSize = getFormattedFileSize(_fileSize);
         }
 
