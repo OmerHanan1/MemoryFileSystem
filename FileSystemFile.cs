@@ -7,13 +7,14 @@ using System.Threading.Tasks;
 
 namespace TinyMemFS
 {
-    internal class FileSystemFile
+    public class FileSystemFile
     {
-        private string _fileName { get; set; }
-        private DateTime _created { get; set; }
-        private byte[] _data { get; set; }
-        private int _fileSize { get; set; }
-        private string _formattedFileSize { get; set; }
+        public string _fileName { get; set; }
+        public DateTime _created { get; set; }
+        public byte[] _data { get; set; }
+        public int _fileSize { get; set; }
+        public string _formattedFileSize { get; set; }
+        public int _cryptoCounter { get; set; }
 
         /// <summary>
         /// Constructor
@@ -28,6 +29,7 @@ namespace TinyMemFS
             _data = data;
             _fileSize = data.Length;
             _formattedFileSize = getFormattedFileSize(_fileSize);
+            _cryptoCounter = 0;
         }
 
         /// <summary>
@@ -41,6 +43,7 @@ namespace TinyMemFS
             this._data = file._data;
             this._fileSize = file._fileSize;
             this._formattedFileSize= file._formattedFileSize;
+            _cryptoCounter = 0;
         }
 
         /// <summary>
@@ -69,8 +72,18 @@ namespace TinyMemFS
         public override string ToString()
         {
             string result = "";
-            result = $"{this._fileName}, {this._formattedFileSize}, {this._created}";
+            result = $"{this._fileName}, {this._formattedFileSize}, {this._created}, {byteArrayToString(this._data)} ";
             return result;
+        }
+
+        public string byteArrayToString(byte[] ba)
+        {
+            string str = "";
+            for (int i = 0; i < ba.Length; i++)
+            {
+                str += ba[i].ToString();
+            }
+            return str;
         }
 
         public byte[] getFileData()

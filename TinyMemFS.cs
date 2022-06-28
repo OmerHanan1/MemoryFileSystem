@@ -1,17 +1,16 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
-using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace TinyMemFS
 {
     public class TinyMemFS
     {
         private ConcurrentDictionary<string,FileSystemFile> fileSystem;
+        private static byte[] iv = new byte[16] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
         /// <summary>
         /// Default constructor
@@ -19,6 +18,35 @@ namespace TinyMemFS
         public TinyMemFS()
         {
             this.fileSystem = new ConcurrentDictionary<string,FileSystemFile>();
+        }
+
+        /// <summary>
+        /// Add file to the file system
+        /// </summary>
+        /// <param name="fsf">File system file instance</param>
+        public void AddFileToFS(FileSystemFile fsf)
+        {
+            if (fsf == null)
+                return;
+            this.fileSystem.TryAdd(fsf._fileName, fsf);
+        }
+
+        /// <summary>
+        /// string representation of File system
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            string str = "";
+            foreach (FileSystemFile fsf in this.fileSystem.Values)
+            {
+                str += " ";
+                str += fsf.ToString();
+                //string tmp = fsf.byteArrayToString(fsf.getFileData());
+                //str += Convert.ToBase64String(fsf.getFileData());
+                str += "\n";
+            }
+            return str;
         }
 
         /// <summary>
@@ -118,8 +146,51 @@ namespace TinyMemFS
         /// <returns>return false if operation failed for any reason</returns>
         public bool encrypt(String key)
         {
+            if (key == null)
+                throw new ArgumentException($"Argument 'key' cannot be null");
+            if (key.Length == 0)
+                throw new ArgumentException($"Key must contain at least 1 char: {key}");
+            if (key.Length > 16)
+                throw new ArgumentException($"Key length must be less or equal to 16: {key}");
 
-            return true;
+            byte[] resultKey = new byte[16];
+            try
+            {
+                byte[] byteKey = Encoding.UTF8.GetBytes(key);
+                for (int i = 0; i < byteKey.Length; i++)
+                    resultKey[i] = byteKey[i];
+
+                AesManaged aes = new AesManaged();
+                aes.Key = resultKey;
+                aes.IV = iv;
+
+                foreach (FileSystemFile fileSystemFile in fileSystem.Values)
+                {
+                    try
+                    {
+                        MemoryStream ms = new MemoryStream();
+                        CryptoStream cryptoStream =
+                            new CryptoStream(ms, aes.CreateEncryptor(), CryptoStreamMode.Write);
+
+                        byte[] InputBytes = fileSystemFile.getFileData();
+                        cryptoStream.Write(InputBytes, 0, InputBytes.Length);
+                        cryptoStream.FlushFinalBlock();
+                        fileSystemFile._data = ms.ToArray();
+                        this.fileSystem[fileSystemFile._fileName]._cryptoCounter++;
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Caught exception: {ex}");
+                        return false;
+                    }
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Caught exception: {ex}");
+                return false; 
+            }
         }
 
         /// <summary>
@@ -130,7 +201,55 @@ namespace TinyMemFS
         /// <returns>return false if operation failed for any reason</returns>
         public bool decrypt(String key)
         {
+            if (key == null)
+                throw new ArgumentException($"Argument 'key' cannot be null");
+            if (key.Length == 0)
+                throw new ArgumentException($"Key must contain at least 1 char: {key}");
+            if (key.Length > 16)
+                throw new ArgumentException($"Key length must be less or equal to 16: {key}");
+            byte[] resultKey = new byte[16];
 
+            try
+            {
+                byte[] byteKey = Encoding.UTF8.GetBytes(key);
+                for (int i = 0; i < byteKey.Length; i++)
+                    resultKey[i] = byteKey[i];
+
+                AesManaged aes = new AesManaged();
+                aes.Key = resultKey;
+                aes.IV = iv;
+
+
+                foreach (FileSystemFile fileSystemFile in fileSystem.Values)
+                {
+                    try
+                    {
+                        if (this.fileSystem[fileSystemFile._fileName]._cryptoCounter > 0) {
+                            MemoryStream ms = new MemoryStream();
+                            CryptoStream cryptoStream = new CryptoStream(ms, aes.CreateDecryptor(), CryptoStreamMode.Write);
+
+                            byte[] InputBytes = fileSystemFile.getFileData();
+                            cryptoStream.Write(InputBytes, 0, InputBytes.Length);
+                            cryptoStream.FlushFinalBlock();
+                            fileSystemFile._data = ms.ToArray();
+                            this.fileSystem[fileSystemFile._fileName]._cryptoCounter--;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        // Console.WriteLine($"Caught exception: {ex}");
+                        Console.WriteLine("Cannot decrypt this file, wrong password - 1");
+                        // return false;
+                    }
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                // Console.WriteLine($"Caught exception: {ex}");
+                Console.WriteLine("Cannot decrypt this file, wrong password - 2");
+                return false;
+            }
             return true;
         }
 
