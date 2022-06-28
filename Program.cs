@@ -7,6 +7,8 @@ namespace TinyMemFS
     {
         static void Main(string[] args)
         {
+            string path = "C:\\Users\\omerm\\filesystem\\test";
+
             #region arrange
             TinyMemFS tinyMemFS = new TinyMemFS();
             byte[] list = new byte[10];
@@ -20,16 +22,18 @@ namespace TinyMemFS
             }
             #endregion
 
-            //Test1(tinyMemFS);
-            //Test2(tinyMemFS);
-            //Test3(tinyMemFS);
-            //Test4(tinyMemFS);
-            //Test5(tinyMemFS);
-
-            tinyMemFS.AddFileToFS(new FileSystemFile("test", DateTime.Now, new byte[]{1,1,1 }));
-            Console.WriteLine(tinyMemFS.ToString());
-            tinyMemFS.save("test", "C:\\Users\\omerm\\OneDrive\\שולחן העבודה\\filesystem");
-            Console.WriteLine(tinyMemFS.ToString());
+            Test1(tinyMemFS);
+            Test2(tinyMemFS);
+            Test3(tinyMemFS);
+            Test4(tinyMemFS);
+            Test5(tinyMemFS);
+            Test8_listfiles(tinyMemFS);
+            Test6_add(tinyMemFS, path, "filename");
+            Test8_listfiles(tinyMemFS);
+            Test7_remove(tinyMemFS, "file #1");
+            Test8_listfiles(tinyMemFS);
+            Test9_save(tinyMemFS, "file #2", path);
+            Test8_listfiles(tinyMemFS);
 
 
             static void Test1(TinyMemFS tinyMemFS) 
@@ -101,14 +105,12 @@ namespace TinyMemFS
                 }
             }
 
-            static void Test6(TinyMemFS tinyMemFS)
+            static void Test6_add(TinyMemFS tinyMemFS, string path, string fileName)
             {
                 // Add function:
-                Console.WriteLine(tinyMemFS.ToString());
                 try
                 {
-                    tinyMemFS.add("New added file", "C:\\Users\\omerm\\filesystem\\test");
-                    Console.WriteLine(tinyMemFS.ToString());
+                    tinyMemFS.add(fileName, path);
                 }
                 catch (Exception ex)
                 {
@@ -116,33 +118,36 @@ namespace TinyMemFS
                 }
             }
 
-            static void Test7(TinyMemFS tinyMemFS)
+            static void Test7_remove(TinyMemFS tinyMemFS, string fileName)
             {
                 // Remove function:
-                Console.WriteLine(tinyMemFS.ToString());
-
+                tinyMemFS.remove(fileName);
             }
 
-            static void Test8(TinyMemFS tinyMemFS)
+            static void Test8_listfiles(TinyMemFS tinyMemFS)
             {
                 // List files:
-                tinyMemFS.listFiles();
+                var list = tinyMemFS.listFiles();
+                for (int i = 0; i < list.Count; i++)
+                {
+                    Console.WriteLine(list[i]);
+                }
+                Console.WriteLine();
 
             }
 
-            static void Test9(TinyMemFS tinyMemFS)
+            static void Test9_save(TinyMemFS tinyMemFS,string fileName, string folderpath)
             {
                 // save:
                 try
                 {
-                    tinyMemFS.save("file #2", "C:\\Users\\omerm\\filesystem");
+                    tinyMemFS.save(fileName, folderpath);
                 }
                 catch(Exception ex)
                 {
                     Console.WriteLine($"{ex}");
                 }
             }
-
         }
     }
 }
