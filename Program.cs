@@ -24,7 +24,7 @@ namespace TinyMemFS
             //Test2(tinyMemFS);
             //Test3(tinyMemFS);
             //Test4(tinyMemFS);
-            Test5(tinyMemFS);
+            //Test5(tinyMemFS);
 
 
             static void Test1(TinyMemFS tinyMemFS) 
