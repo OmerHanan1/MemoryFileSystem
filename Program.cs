@@ -26,6 +26,11 @@ namespace TinyMemFS
             //Test4(tinyMemFS);
             //Test5(tinyMemFS);
 
+            tinyMemFS.AddFileToFS(new FileSystemFile("test", DateTime.Now, new byte[]{1,1,1 }));
+            Console.WriteLine(tinyMemFS.ToString());
+            tinyMemFS.save("test", "C:\\Users\\omerm\\OneDrive\\שולחן העבודה\\filesystem");
+            Console.WriteLine(tinyMemFS.ToString());
+
 
             static void Test1(TinyMemFS tinyMemFS) 
             {
@@ -96,7 +101,47 @@ namespace TinyMemFS
                 }
             }
 
+            static void Test6(TinyMemFS tinyMemFS)
+            {
+                // Add function:
+                Console.WriteLine(tinyMemFS.ToString());
+                try
+                {
+                    tinyMemFS.add("New added file", "C:\\Users\\omerm\\filesystem\\test");
+                    Console.WriteLine(tinyMemFS.ToString());
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Caught exception: {ex}");
+                }
+            }
 
+            static void Test7(TinyMemFS tinyMemFS)
+            {
+                // Remove function:
+                Console.WriteLine(tinyMemFS.ToString());
+
+            }
+
+            static void Test8(TinyMemFS tinyMemFS)
+            {
+                // List files:
+                tinyMemFS.listFiles();
+
+            }
+
+            static void Test9(TinyMemFS tinyMemFS)
+            {
+                // save:
+                try
+                {
+                    tinyMemFS.save("file #2", "C:\\Users\\omerm\\filesystem");
+                }
+                catch(Exception ex)
+                {
+                    Console.WriteLine($"{ex}");
+                }
+            }
 
         }
     }

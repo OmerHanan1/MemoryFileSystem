@@ -252,7 +252,7 @@ namespace TinyMemFS
             }
         }
 
-        #region Extesnsions
+        
         // ************** NOT MANDATORY ********************************************
         // ********** Extended features of TinyMemFS ********************************
         public bool saveToDisk(String fileName)
@@ -383,6 +383,5 @@ namespace TinyMemFS
              */
             return 0;
         }
-        #endregion
     }
 }
