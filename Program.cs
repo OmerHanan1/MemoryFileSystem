@@ -20,10 +20,11 @@ namespace TinyMemFS
             }
             #endregion
 
-            Test1(tinyMemFS);
-            Test2(tinyMemFS);
-            Test3(tinyMemFS);
-            Test4(tinyMemFS);
+            //Test1(tinyMemFS);
+            //Test2(tinyMemFS);
+            //Test3(tinyMemFS);
+            //Test4(tinyMemFS);
+            Test5(tinyMemFS);
 
 
             static void Test1(TinyMemFS tinyMemFS) 
@@ -67,8 +68,35 @@ namespace TinyMemFS
             static void Test4(TinyMemFS tinyMemFS)
             {
                 // Fourth scenario - trying to decrypt files that never encrypted
-
+                Console.WriteLine(tinyMemFS.ToString());
+                tinyMemFS.decrypt("SomePassword");
+                Console.WriteLine(tinyMemFS.ToString());
             }
+
+            static void Test5(TinyMemFS tinyMemFS)
+            {
+                // Fifth scenario - adding files without order, encrypt and decrypt several times
+                Console.WriteLine("-------------------------Encryption----------------------------");
+
+                for (int i = 0; i < 5; i++)
+                {
+                    Console.WriteLine($"{i+1} Iteration:");
+                    Console.WriteLine(tinyMemFS.ToString());
+                    tinyMemFS.encrypt($"password{i}");
+                    tinyMemFS.AddFileToFS(new FileSystemFile($"TestFile #{i+1}", DateTime.Now, new byte[] { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }));
+                    Console.WriteLine(tinyMemFS.ToString());
+                }
+                Console.WriteLine("-------------------------Decryption----------------------------");
+                for (int i = 4; i >= 0; i--)
+                {
+                    Console.WriteLine($"{5-i+1} Iteration:");
+                    Console.WriteLine(tinyMemFS.ToString());
+                    tinyMemFS.decrypt($"password{i}");
+                    Console.WriteLine(tinyMemFS.ToString());
+                }
+            }
+
+
 
         }
     }
