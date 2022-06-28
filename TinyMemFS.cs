@@ -180,6 +180,8 @@ namespace TinyMemFS
                     }
                     catch (Exception ex)
                     {
+                        Console.WriteLine("Something went wrong while trying to encrypt the File system.");
+                        Console.WriteLine();
                         Console.WriteLine($"Caught exception: {ex}");
                         return false;
                     }
@@ -235,22 +237,19 @@ namespace TinyMemFS
                             this.fileSystem[fileSystemFile._fileName]._cryptoCounter--;
                         }
                     }
-                    catch (Exception ex)
+                    catch 
                     {
-                        // Console.WriteLine($"Caught exception: {ex}");
-                        Console.WriteLine("Cannot decrypt this file, wrong password - 1");
-                        // return false;
+                        Console.WriteLine("Cannot decrypt this file, wrong password");
                     }
                 }
                 return true;
             }
             catch (Exception ex)
             {
-                // Console.WriteLine($"Caught exception: {ex}");
-                Console.WriteLine("Cannot decrypt this file, wrong password - 2");
+                Console.WriteLine($"Caught exception: {ex}");
+                Console.WriteLine();
                 return false;
             }
-            return true;
         }
 
         #region Extesnsions
